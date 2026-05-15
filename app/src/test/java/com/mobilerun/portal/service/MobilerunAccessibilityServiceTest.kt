@@ -53,6 +53,10 @@ class MobilerunAccessibilityServiceTest {
             currentPackageName = "com.example.app",
             snapshotActivityName = "MainActivity",
             currentActivityName = "MainActivity",
+            snapshotScreenWidth = 2400,
+            currentScreenWidth = 2400,
+            snapshotScreenHeight = 1080,
+            currentScreenHeight = 1080,
         )
 
         assertTrue(result)
@@ -68,6 +72,10 @@ class MobilerunAccessibilityServiceTest {
             currentPackageName = "com.example.app",
             snapshotActivityName = "MainActivity",
             currentActivityName = "MainActivity",
+            snapshotScreenWidth = 2400,
+            currentScreenWidth = 2400,
+            snapshotScreenHeight = 1080,
+            currentScreenHeight = 1080,
         )
 
         assertFalse(result)
@@ -83,6 +91,10 @@ class MobilerunAccessibilityServiceTest {
             currentPackageName = "com.example.other",
             snapshotActivityName = "MainActivity",
             currentActivityName = "MainActivity",
+            snapshotScreenWidth = 2400,
+            currentScreenWidth = 2400,
+            snapshotScreenHeight = 1080,
+            currentScreenHeight = 1080,
         )
         val activityMismatch = MobilerunAccessibilityService.shouldReuseVisibleElementsSnapshot(
             cachedElementCount = 1,
@@ -92,10 +104,33 @@ class MobilerunAccessibilityServiceTest {
             currentPackageName = "com.example.app",
             snapshotActivityName = "MainActivity",
             currentActivityName = "OtherActivity",
+            snapshotScreenWidth = 2400,
+            currentScreenWidth = 2400,
+            snapshotScreenHeight = 1080,
+            currentScreenHeight = 1080,
         )
 
         assertFalse(packageMismatch)
         assertFalse(activityMismatch)
+    }
+
+    @Test
+    fun shouldReuseVisibleElementsSnapshot_rejectsScreenBoundsMismatch() {
+        val result = MobilerunAccessibilityService.shouldReuseVisibleElementsSnapshot(
+            cachedElementCount = 1,
+            snapshotTimeMs = 1_000L,
+            nowMs = 1_100L,
+            snapshotPackageName = "com.example.app",
+            currentPackageName = "com.example.app",
+            snapshotActivityName = "MainActivity",
+            currentActivityName = "MainActivity",
+            snapshotScreenWidth = 1080,
+            currentScreenWidth = 2400,
+            snapshotScreenHeight = 2400,
+            currentScreenHeight = 1080,
+        )
+
+        assertFalse(result)
     }
 
     @Test
@@ -108,6 +143,10 @@ class MobilerunAccessibilityServiceTest {
             currentPackageName = "com.example.app",
             snapshotActivityName = "MainActivity",
             currentActivityName = "MainActivity",
+            snapshotScreenWidth = 2400,
+            currentScreenWidth = 2400,
+            snapshotScreenHeight = 1080,
+            currentScreenHeight = 1080,
         )
 
         assertFalse(result)

@@ -75,13 +75,19 @@ class MobilerunAccessibilityService : AccessibilityService(), ConfigManager.Conf
             currentPackageName: String,
             snapshotActivityName: String,
             currentActivityName: String,
+            snapshotScreenWidth: Int,
+            currentScreenWidth: Int,
+            snapshotScreenHeight: Int,
+            currentScreenHeight: Int,
         ): Boolean {
             val snapshotAgeMs = nowMs - snapshotTimeMs
             return cachedElementCount > 0 &&
                     snapshotTimeMs > 0L &&
                     snapshotAgeMs in 0L..VISIBLE_ELEMENTS_STALE_GRACE_MS &&
                     snapshotPackageName == currentPackageName &&
-                    snapshotActivityName == currentActivityName
+                    snapshotActivityName == currentActivityName &&
+                    snapshotScreenWidth == currentScreenWidth &&
+                    snapshotScreenHeight == currentScreenHeight
         }
 
         internal fun updateScreenBounds(bounds: Rect, width: Int, height: Int): Boolean {
@@ -208,6 +214,8 @@ class MobilerunAccessibilityService : AccessibilityService(), ConfigManager.Conf
     private var visibleElementsSnapshotTimeMs = 0L
     private var visibleElementsSnapshotPackageName = ""
     private var visibleElementsSnapshotActivityName = ""
+    private var visibleElementsSnapshotScreenWidth = 0
+    private var visibleElementsSnapshotScreenHeight = 0
 
     override fun onCreate() {
         super.onCreate()
@@ -476,6 +484,8 @@ class MobilerunAccessibilityService : AccessibilityService(), ConfigManager.Conf
         visibleElementsSnapshotTimeMs = 0L
         visibleElementsSnapshotPackageName = ""
         visibleElementsSnapshotActivityName = ""
+        visibleElementsSnapshotScreenWidth = 0
+        visibleElementsSnapshotScreenHeight = 0
     }
 
     private fun applyConfiguration() {
@@ -661,6 +671,10 @@ class MobilerunAccessibilityService : AccessibilityService(), ConfigManager.Conf
                         currentPackageName = currentPackageName,
                         snapshotActivityName = visibleElementsSnapshotActivityName,
                         currentActivityName = currentActivityName,
+                        snapshotScreenWidth = visibleElementsSnapshotScreenWidth,
+                        currentScreenWidth = screenBoundsSnapshot.width(),
+                        snapshotScreenHeight = visibleElementsSnapshotScreenHeight,
+                        currentScreenHeight = screenBoundsSnapshot.height(),
                     )
                 ) {
                     return visibleElements.toMutableList()
@@ -685,6 +699,8 @@ class MobilerunAccessibilityService : AccessibilityService(), ConfigManager.Conf
             visibleElementsSnapshotTimeMs = SystemClock.elapsedRealtime()
             visibleElementsSnapshotPackageName = currentPackageName
             visibleElementsSnapshotActivityName = currentActivityName
+            visibleElementsSnapshotScreenWidth = screenBoundsSnapshot.width()
+            visibleElementsSnapshotScreenHeight = screenBoundsSnapshot.height()
         }
 
         return elements
